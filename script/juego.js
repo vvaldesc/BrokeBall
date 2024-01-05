@@ -89,16 +89,16 @@ class Juego {
     tamCasilla = 30,
     radioBola = 20
   ) {
-    this.nivelActual = 0;
-    this.MAXniveles = MAXniveles;
-    this.MAXtipos = MAXtipos;
-    this.MAXvidas = MAXvidas;
-    this.MAXfps = MAXfps;
-    this.nombreJuego = nombreJuego;
-    this.tiempoInicial = tiempoInicial;
-    this.tamCasilla = tamCasilla;
-    this.radioBola = radioBola;
-    this.arrNiveles = [nivel_1,nivel_2,nivel_3]
+    this._nivelActual = 0;
+    this._MAXniveles = MAXniveles;
+    this._MAXtipos = MAXtipos;
+    this._MAXvidas = MAXvidas;
+    this._MAXfps = MAXfps;
+    this._nombreJuego = nombreJuego;
+    this._tiempoInicial = tiempoInicial;
+    this._tamCasilla = tamCasilla;
+    this._radioBola = radioBola;
+    this._arrNiveles = [nivel_1,nivel_2,nivel_3]
   }
 
   traducirObjeto(key) {
@@ -177,18 +177,16 @@ class Juego {
   }
 
   toString() {
-    return `Juego: 
-      MAXniveles = ${this.MAXniveles},
-      MAXtipos = ${this.MAXtipos},
-      MAXvidas = ${this.MAXvidas},
-      MAXfps = ${this.MAXfps},
-      nombreJuego = ${this.nombreJuego},
-      tiempoInicial = ${this.tiempoInicial},
-      tamCasilla = ${this.tamCasilla},
-      radioBola = ${this.radioBola},
-      arrNiveles = ${JSON.stringify(this.arrNiveles)}`;
+    return `Cuadrado:
+      x = ${this._x},
+      y = ${this._y},
+      width = ${this._width},
+      height = ${this._height},
+      visible = ${this._visible},
+      tipo = ${this._tipo},
+      objeto = ${this._objeto},
+      vidas = ${this._vidas},
+      color = ${this._color},
+      imagen = ${this._imagen ? this._imagen.src : 'null'}`;
   }
 }
-
-const juego = new Juego();
-console.log(juego.toString());

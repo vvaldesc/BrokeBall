@@ -1,41 +1,41 @@
 class Cuadrado {
   constructor(x, y, visible = false, tipo = 0, color = null) {
-    this.x = x;
-    this.y = y;
-    this.width = juego.tamCasilla();
-    this.height = juego.tamCasilla();
-    this.visible = visible;
-    this.tipo = tipo;
-    this.objeto = juego.traducirObjeto(randomObjeto(this.tipo));
-    this.vidas = vidasTipo();
-    this.color = null;
-    this.imagen = null;
+    this._x = x;
+    this._y = y;
+    this._width = juego.tamCasilla();
+    this._height = juego.tamCasilla();
+    this._visible = visible;
+    this._tipo = tipo;
+    this._objeto = juego.traducirObjeto(randomObjeto(this._tipo));
+    this._vidas = vidasTipo();
+    this._color = null;
+    this._imagen = null;
 
 
     if (tieneImagen()) {
       try {
-        this.imagen = document.createElement("img");
-        this.imagen.src = imagenTipo(this.tipo);
+        this._imagen = document.createElement("img");
+        this._imagen.src = imagenTipo(this._tipo);
       } catch (error) {
         console.error("Error buscando imagen:", error.message);
       }
     } else if (color) {
-      this.color = color;
+      this._color = color;
     } else {
       console.error("error no hay color ni imagen");
     }
   }
 
   tieneImagen(){
-    return (this.tipo() >= 0 && this.tipo() <=3);
+    return (this._tipo >= 0 && this._tipo <=3);
   }
 
   dibujar() {
-    if (this.imagen) {
-      ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height);
-    } else if (this.color) {
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
+    if (this._imagen) {
+      ctx.drawImage(this._imagen, this._x, this._y, this._width, this._height);
+    } else if (this._color) {
+      ctx.fillStyle = this._color;
+      ctx.fillRect(this._x, this._y, this._width, this._height);
     }
   }
 
