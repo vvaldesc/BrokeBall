@@ -6,6 +6,7 @@ class Pala {
       this.height = juego.tamCasilla();
       this.visible = visible;
       this.tipo = tipo;
+      this.velocidad = velocidad;
   
       if (tieneImagen(tipo)) {
         try{
