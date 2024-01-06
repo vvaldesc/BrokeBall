@@ -1,12 +1,26 @@
-class Bola {
+class Bola{
   constructor(x, y, visible = true, color = "red", vectorX = -1, vectorY = 1) {
     this._x = x;
     this._y = y;
     this._visible = visible;
     this._color = color;
-    this._radio = juego.radioBola;
+    this._radio = 15;
     this._velocidad = 1;
     this._vectorXY = [vectorX, vectorY];
+    this._mulVelocidad = 1;
+  }
+
+  mover(){
+    this._x+=this._vectorXY[0]*_mulVelocidad;
+    this._y+=this._vectorXY[1]*_mulVelocidad;
+  }
+  
+  dibujar() {
+    ctx.beginPath();
+    ctx.arc(this._x*tamCasilla, this._y*tamCasilla, this._radio, 0, 2 * Math.PI);
+    ctx.fillStyle = this._color;
+    ctx.fill();
+    ctx.closePath();
   }
 
   get x() {
@@ -63,14 +77,6 @@ class Bola {
 
   set vectorXY(value) {
     this._vectorXY = value;
-  }
-
-  dibujar() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radio, 0, 2 * Math.PI);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-    ctx.closePath();
   }
 
   toString() {

@@ -1,23 +1,25 @@
 class Cuadrado {
   constructor(x, y, visible = false, tipo = 0, color = null) {
+
     this._x = x;
     this._y = y;
-    this._width = juego.tamCasilla();
-    this._height = juego.tamCasilla();
+    this._lado = tamCasilla;
     this._visible = visible;
     this._tipo = tipo;
-    this._objeto = juego.traducirObjeto(randomObjeto(this._tipo));
-    this._vidas = vidasTipo();
+    this._objeto = traducirObjeto(this.randomObjeto(this._tipo));
+    this._vidas = this.vidasTipo();
+
     this._color = null;
     this._imagen = null;
 
-
-    if (tieneImagen()) {
+    if (this.tieneImagen()) {
       try {
-        this._imagen = document.createElement("img");
-        this._imagen.src = imagenTipo(this._tipo);
+        this._imagen = document.createElement("IMG");
+        this._imagen.src = "./assets/texturas/textureMap1.jpg";
+        //extraccionImagen = this.imagenTipo();
       } catch (error) {
         console.error("Error buscando imagen:", error.message);
+        this._color = "black";
       }
     } else if (color) {
       this._color = color;
@@ -26,20 +28,89 @@ class Cuadrado {
     }
   }
 
-  tieneImagen(){
-    return (this._tipo >= 0 && this._tipo <=3);
+  imagenTipo(){
+
+    let lado = 272;
+    let padding = 17;
+    let separación = 28;
+    let vectorInicio = [0,0]
+    //17 es el margen
+    //29 es la separacion
+    //cada lado aumenta 272
+
+    vectorInicio[0]+=padding;
+    vectorInicio[1]+=padding;//punto de partida de la imágen
+
+
+    switch (this._tipo) {
+      case 1:
+        vectorInicio[0]+=lado+separación+lado+separación+lado;
+        break;
+      case 2:
+        vectorInicio[0]+=lado+separación+lado;
+        vectorInicio[1]+=lado+separación+lado;
+        break;
+      case 3:
+        vectorInicio[0]+=lado+separación+lado;
+        break;
+      default:
+        break;
+    }
+    
+    return {
+      sx : vectorInicio[0],
+      sy : vectorInicio[1],
+      slado : lado,
+    }
+
+
   }
 
-  dibujar() {
-    if (this._imagen) {
-      ctx.drawImage(this._imagen, this._x, this._y, this._width, this._height);
-    } else if (this._color) {
-      ctx.fillStyle = this._color;
-      ctx.fillRect(this._x, this._y, this._width, this._height);
+  vidasTipo(){
+    switch (this._tipo) {
+      case 1:
+        return 1
+        break;
+      case 2:
+        return 2
+        break;
+      case 3:
+        return 5
+        break;
+      default:
+        break;
     }
   }
 
+  randomObjeto(){
+    switch (this._tipo) {
+      case 1:
+        return 10;
+        break;
+      case 2:
+        return 10;
+        break;
+      case 3:
+        return 10;
+        break;
+      default:
+        break;
+    }
+  }
 
+  tieneImagen() {
+    return this._tipo >= 0 && this._tipo <= 3;
+  }
+
+  dibujar() {
+    let extraccionImagen = this.imagenTipo();
+    if (this._imagen) {
+      ctx.drawImage(this._imagen, extraccionImagen.sx, extraccionImagen.sy, extraccionImagen.slado, extraccionImagen.slado, this._x*tamCasilla, this._y*tamCasilla, this._lado, this._lado);
+    } else if (this._color) {
+      ctx.fillStyle = this._color;
+      ctx.fillRect(this._x, this._y, this._lado, this._lado);
+    }
+  }
 
   //GETTERS // SETTERS
   get x() {
@@ -58,20 +129,12 @@ class Cuadrado {
     this._y = value;
   }
 
-  get width() {
-    return this._width;
+  get lado() {
+    return this._lado;
   }
 
-  set width(value) {
-    this._width = value;
-  }
-
-  get height() {
-    return this._height;
-  }
-
-  set height(value) {
-    this._height = value;
+  set lado(value) {
+    this._lado = value;
   }
 
   get visible() {

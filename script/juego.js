@@ -75,10 +75,16 @@ const nivel_3 =
   [0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0],
 ];
 
+const MAXniveles = 3;
+const MAXtipos = 4;
+const MAXvidas = 3;
+const MAXfps = 120;
+const nombreJuego = "BrokeBall";
+const tiempoInicial = 40;
+const tamCasilla = 30;
+const velocidadPala = 10;
 
-
-
-class Juego {
+class Juego{
   constructor(
     MAXniveles = 3,
     MAXtipos = 4,
@@ -86,8 +92,7 @@ class Juego {
     MAXfps = 120,
     nombreJuego = "BrokeBall",
     tiempoInicial = 40,
-    tamCasilla = 30,
-    radioBola = 20
+    tamCasilla = 30
   ) {
     this._nivelActual = 0;
     this._MAXniveles = MAXniveles;
@@ -97,20 +102,22 @@ class Juego {
     this._nombreJuego = nombreJuego;
     this._tiempoInicial = tiempoInicial;
     this._tamCasilla = tamCasilla;
-    this._radioBola = radioBola;
     this._arrNiveles = [nivel_1,nivel_2,nivel_3]
-  }
+    console.log(this._arrNiveles)
 
-  traducirObjeto(key) {
-    switch (key) {
-      // Define la lógica de traducción aquí
-      case 'someKey':
-        return 'someTranslation';
-      default:
-        return 'defaultTranslation';
-    }
+    this.Tablero = new Tablero (
+      this._arrNiveles[this.nivelActual].length*tamCasilla,
+      this._arrNiveles[this.nivelActual][0].length*tamCasilla,
+      this._arrNiveles[this.nivelActual],
+      );
   }
   
+  get nivelActual() {
+    return this._nivelActual;
+  }
+  set nivelActual(value) {
+    this._nivelActual = value;
+  }
 
   // Getter y Setter para MAXniveles
   get MAXniveles() {
@@ -166,14 +173,6 @@ class Juego {
   }
   set tamCasilla(value) {
     this._tamCasilla = value;
-  }
-
-  // Getter y Setter para tiempoInicial
-  get radioBola() {
-    return this._radioBola;
-  }
-  set radioBola(value) {
-    this._radioBola = value;
   }
 
   toString() {
