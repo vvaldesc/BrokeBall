@@ -11,8 +11,8 @@ class Bola{
   }
 
   mover(){
-    this._x+=this._vectorXY[0]*_mulVelocidad;
-    this._y+=this._vectorXY[1]*_mulVelocidad;
+    this._x+=this._vectorXY[0]/tamCasilla*this._mulVelocidad;
+    this._y+=this._vectorXY[1]/tamCasilla*this._mulVelocidad;
   }
   
   dibujar() {

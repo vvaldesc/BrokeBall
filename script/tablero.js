@@ -14,7 +14,7 @@ class Tablero{
     this._matrizActual = matrizActual;
     this._jsonElementos = this.inicializarTablero();
     debugger
-    this.mostrarTablero();
+    this.animarTablero();
     this.toString();
   }
 
@@ -38,7 +38,7 @@ class Tablero{
       ancho : null
     };
 
-    let anchoInicialPala=0;
+    let anchoInicialPala=1;
     try {
       this._matrizActual.map((fila, y) => fila.map((elemento, x) => {
         if (elemento >= 1 && elemento <= 3) {
@@ -49,7 +49,7 @@ class Tablero{
         } else if (elemento >= 7 && elemento <= 9){
           // LA PALA SIEMPRE INICIARÁ SIENDO TIPO 7
           if (x-1<this._width && this._matrizActual[y][x+1]!=7) {
-            let pala = new Pala(x,y,anchoInicialPala,true,elemento);
+            let pala = new Pala(x-anchoInicialPala+1,y,anchoInicialPala,true,elemento);
             jsonarrPala.elemento = pala;
             jsonarrPala.ancho = anchoInicialPala;
             jsonarrPala.x = x;
@@ -78,14 +78,33 @@ class Tablero{
   }
 
   mostrarTablero(){
-    console.log(this._jsonElementos);
+    console.log("Mostrar"+this._jsonElementos);
     this._jsonElementos.Cuadrados.elemento.map((cuadrado) => cuadrado.dibujar());
     this._jsonElementos.bola.elemento.dibujar();
     this._jsonElementos.pala.elemento.dibujar();
   }
 
   actualizarTablero(){
-    return 0;
+    console.log("Mover"+this._jsonElementos);
+    //this._jsonElementos.Cuadrados.elemento.map((cuadrado) => cuadrado.dibujar());
+
+    //COMPROBAR SI LA BOLA PUEDE SEGUIR EL MISMO VECTOR
+    this._jsonElementos.bola.elemento.mover();
+    //this._jsonElementos.pala.elemento.dibujar();
+  }
+
+  animarTablero(){
+    debugger
+    setInterval(() => {
+      this.borrarTablero();
+      this.actualizarTablero();
+      this.mostrarTablero();
+    }, 1000/MAXfps);
+  }
+
+  borrarTablero(){
+    canvas.width = nivel_1[0].length*tamCasilla;
+    canvas.height = nivel_1.length*tamCasilla;
   }
   
   hayCuadrados() {

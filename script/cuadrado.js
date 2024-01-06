@@ -1,15 +1,14 @@
 class Cuadrado {
-  constructor(x, y, visible = false, tipo = 0, color = null) {
+  constructor(x, y, visible = false, tipo = 0, color = "blue") {
 
     this._x = x;
     this._y = y;
-    this._lado = tamCasilla;
     this._visible = visible;
     this._tipo = tipo;
     this._objeto = traducirObjeto(this.randomObjeto(this._tipo));
     this._vidas = this.vidasTipo();
 
-    this._color = null;
+    this._color = color;
     this._imagen = null;
 
     if (this.tieneImagen()) {
@@ -104,11 +103,13 @@ class Cuadrado {
 
   dibujar() {
     let extraccionImagen = this.imagenTipo();
+    // para empezar con colores
+    this._imagen=null;
     if (this._imagen) {
-      ctx.drawImage(this._imagen, extraccionImagen.sx, extraccionImagen.sy, extraccionImagen.slado, extraccionImagen.slado, this._x*tamCasilla, this._y*tamCasilla, this._lado, this._lado);
+      ctx.drawImage(this._imagen, extraccionImagen.sx, extraccionImagen.sy, extraccionImagen.slado, extraccionImagen.slado, this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);
     } else if (this._color) {
       ctx.fillStyle = this._color;
-      ctx.fillRect(this._x, this._y, this._lado, this._lado);
+      ctx.fillRect(this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);
     }
   }
 

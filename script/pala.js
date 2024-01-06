@@ -1,17 +1,16 @@
 class Pala {
   constructor(x, y, ancho, visible = false, tipo = 7, color = "yellow") {
-    debugger
     
     this._x = x;
     this._y = y;
-    this._width = tamCasilla * ancho;
-    this._height = tamCasilla;
+    this._width = ancho;
+    this._height = 1;
     this._visible = visible;
     this._tipo = tipo;
     this._velocidad = this.velocidadTipo();
 
     this._imagen = null;
-    this._color = null;
+    this._color = color;
 /*
     if (tieneImagen()) {
       try {
@@ -25,6 +24,11 @@ class Pala {
     } else {
       console.error("error no hay color ni imagen");
     }*/
+  }
+
+  mover(){
+    /**/
+    return 0
   }
 
   velocidadTipo(){
@@ -53,11 +57,14 @@ class Pala {
   }
 
   dibujar() {
+    debugger
     if (this._imagen) {
-      ctx.drawImage(this._imagen, this._x, this._y, this._width, this._height);
+      ctx.drawImage(this._imagen, this._x, this._y, this._width*tamCasilla, this._height*tamCasilla);
     } else if (this._color) {
       ctx.fillStyle = this._color;
-      ctx.fillRect(this._x, this._y, this._width*tamCasilla, this._height*tamCasilla);
+      ctx.fillRect(this._x*tamCasilla, this._y*tamCasilla, this._width*tamCasilla, this._height*tamCasilla);
     }
   }
 }
+
+document.addEventListener("keydown",mover);
