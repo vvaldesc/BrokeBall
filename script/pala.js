@@ -57,7 +57,6 @@ class Pala {
   }
 
   dibujar() {
-    debugger
     if (this._imagen) {
       ctx.drawImage(this._imagen, this._x, this._y, this._width*tamCasilla, this._height*tamCasilla);
     } else if (this._color) {
@@ -67,4 +66,4 @@ class Pala {
   }
 }
 
-document.addEventListener("keydown",mover);
+//document.addEventListener("keydown",mover);

@@ -113,6 +113,10 @@ class Cuadrado {
     }
   }
 
+  quitarVida(){
+    this._vidas--;
+  }
+
   //GETTERS // SETTERS
   get x() {
     return this._x;
