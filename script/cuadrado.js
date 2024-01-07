@@ -74,7 +74,7 @@ class Cuadrado {
         return 2
         break;
       case 3:
-        return 5
+        return 4
         break;
       default:
         break;
@@ -104,9 +104,14 @@ class Cuadrado {
   dibujar() {
     let extraccionImagen = this.imagenTipo();
     // para empezar con colores
-    this._imagen=null;
+    //this._imagen=null;
     if (this._imagen) {
       ctx.drawImage(this._imagen, extraccionImagen.sx, extraccionImagen.sy, extraccionImagen.slado, extraccionImagen.slado, this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);
+      
+      /*ctx.globalCompositeOperation = "multiply";
+      ctx.fillStyle = `rgba(0, 0, 0, ${ 0.20 *(this.vidasTipo() - this.vidas) })`; // Color negro semitransparente
+      ctx.fillRect(this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);*/
+    
     } else if (this._color) {
       ctx.fillStyle = this._color;
       ctx.fillRect(this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);
@@ -115,6 +120,12 @@ class Cuadrado {
 
   quitarVida(){
     this._vidas--;
+  }
+
+  resiste () {
+    debugger
+    this.quitarVida();
+    return this._vidas < 0;
   }
 
   //GETTERS // SETTERS

@@ -86,7 +86,6 @@ class Tablero{
 
     this._jsonElementos.bola.elemento.dibujar();
     this.dibujarPunto(this._jsonElementos.bola.x,this._jsonElementos.bola.y);
-
     this._jsonElementos.pala.elemento.dibujar();
   }
 
@@ -107,6 +106,7 @@ class Tablero{
     let colision = {
       objetoColisionado: null,
       vectorAcambiar: null,
+      indexCuadrado: null
     };
 
     let vectorAux = this._jsonElementos.bola.elemento.vectorXY;
@@ -169,9 +169,11 @@ class Tablero{
       valorTableroColisionado === 7
         ) {
           debugger
-
-
-        if (valorTableroColisionado === 1) colision.objetoColisionado = this.encontrarInstanciaBloque(coordenadasBolaProximoTick, radioComprobarY, radioComprobarX, colision);
+        if (valorTableroColisionado === 1) {
+          const resultado = this.encontrarInstanciaBloque(coordenadasBolaProximoTick, radioComprobarY, radioComprobarX, colision);
+          colision.objetoColisionado = resultado.objetoColisionado;
+          colision.index = resultado.index;
+        }
         else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
 
 
@@ -191,7 +193,6 @@ class Tablero{
 
         //Reflexión:
 
-        debugger
         console.log(Math.abs(centroCuadradoY - this._jsonElementos.bola.y));
         if (Math.abs(centroCuadradoY - this._jsonElementos.bola.y) < this._jsonElementos.bola.elemento.radio/tamCasilla) {
           colision.vectorAcambiar = "x";
@@ -264,19 +265,16 @@ class Tablero{
         enc = true;
         colision.objetoColisionado =
           this._jsonElementos.Cuadrados.elemento[index];
-          return colision.objetoColisionado;
-      }
+          return { objetoColisionado: colision.objetoColisionado, index: index };
+        }
 
       index++;
     }
     if (!colision.objetoColisionado) return this.encontrarInstanciaBloque(coordenadasBolaProximoTick,radioComprobarY,radioComprobarX,colision, true);
   }
 
-  actualizarVidas(cuadrado) {
-    cuadrado.quitarVida();
-    if (cuadrado.vidas === 0) {
-      cuadrado = null;
-    }
+  resisteCuadradoColision(cuadrado){
+    return cuadrado.resiste();
   }
 
   actualizarTablero(){
@@ -286,14 +284,23 @@ class Tablero{
     //depende de this.comprobarColisionBola()
     if (colision) {
         this.alterarVectorBola(colision);
-        if (colision.elemento instanceof Cuadrado) {
-            this.actualizarVidas(colision.elemento);
+        debugger
+        if (colision.objetoColisionado instanceof Cuadrado) {
+            if(!this.resisteCuadradoColision(colision.objetoColisionado)) this.eliminarCuadrado(colision.index);
         }
     }
+
     let bolaAux = this._jsonElementos.bola.elemento;
     bolaAux.mover();
     this._jsonElementos.bola={ elemento : bolaAux, x : bolaAux._x, y : bolaAux._y};
     //this._jsonElementos.pala.elemento.dibujar();
+  }
+
+  eliminarCuadrado(index){
+    this._matrizActual[this._jsonElementos.Cuadrados.y[index]][this._jsonElementos.Cuadrados.x[index]] = 0;
+    this._jsonElementos.Cuadrados.elemento.splice(index, 1);
+    this._jsonElementos.Cuadrados.x.splice(index, 1);
+    this._jsonElementos.Cuadrados.y.splice(index, 1);
   }
 
   animarTablero(){
