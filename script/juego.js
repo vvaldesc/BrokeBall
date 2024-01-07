@@ -21,7 +21,7 @@ const nivel_1 =
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0],
@@ -105,7 +105,7 @@ class Juego{
     this._arrNiveles = [nivel_1,nivel_2,nivel_3]
     console.log(this._arrNiveles)
 
-    this.Tablero = new Tablero (
+    this._Tablero = new Tablero (
       this._arrNiveles[this.nivelActual].length*tamCasilla,
       this._arrNiveles[this.nivelActual][0].length*tamCasilla,
       this._arrNiveles[this.nivelActual]
@@ -175,17 +175,20 @@ class Juego{
     this._tamCasilla = value;
   }
 
+  // Getter para Tablero
+  get Tablero() {
+    return this._Tablero;
+  }
+
   toString() {
-    return `Cuadrado:
-      x = ${this._x},
-      y = ${this._y},
-      width = ${this._width},
-      height = ${this._height},
-      visible = ${this._visible},
-      tipo = ${this._tipo},
-      objeto = ${this._objeto},
-      vidas = ${this._vidas},
-      color = ${this._color},
-      imagen = ${this._imagen ? this._imagen.src : 'null'}`;
+    return `Juego:
+      nivelActual = ${this._nivelActual},
+      MAXniveles = ${this._MAXniveles},
+      MAXtipos = ${this._MAXtipos},
+      MAXvidas = ${this._MAXvidas},
+      MAXfps = ${this._MAXfps},
+      nombreJuego = ${this._nombreJuego},
+      tiempoInicial = ${this._tiempoInicial},
+      tamCasilla = ${this._tamCasilla}`;
   }
 }

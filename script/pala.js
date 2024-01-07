@@ -11,6 +11,10 @@ class Pala {
 
     this._imagen = null;
     this._color = color;
+    this._mulVelocidad = 1;
+
+    this.moviendo = null;
+
 /*
     if (tieneImagen()) {
       try {
@@ -26,9 +30,25 @@ class Pala {
     }*/
   }
 
-  mover(){
-    /**/
-    return 0
+  mover(e) {
+      if(this.moviendo===null) this.moviendo = setInterval(() => {
+        switch (e.key) {
+          case 'ArrowLeft':
+            // Mover hacia la izquierda
+            this._x -= 1 /10 * this._mulVelocidad;
+            break;
+          case 'ArrowRight':
+            // Mover hacia la derecha
+            this._x += 1 /10 * this._mulVelocidad;
+            break;
+          // Puedes manejar otras teclas de flecha si es necesario
+        }
+      }, 1000 / MAXfps);
+  }
+
+  pararMovimiento() {
+    clearInterval(this.moviendo);
+    this.moviendo = null;
   }
 
   velocidadTipo(){
@@ -65,5 +85,3 @@ class Pala {
     }
   }
 }
-
-//document.addEventListener("keydown",mover);

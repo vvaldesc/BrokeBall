@@ -29,7 +29,7 @@ class Cuadrado {
 
   imagenTipo(){
 
-    let lado = 272;
+    let lado = 271;
     let padding = 17;
     let separación = 28;
     let vectorInicio = [0,0]
@@ -37,20 +37,20 @@ class Cuadrado {
     //29 es la separacion
     //cada lado aumenta 272
 
-    vectorInicio[0]+=padding;
+    vectorInicio[0]+=padding+separación;
     vectorInicio[1]+=padding;//punto de partida de la imágen
 
 
     switch (this._tipo) {
       case 1:
-        vectorInicio[0]+=lado+separación+lado+separación+lado;
+        vectorInicio[0]+=-separación;
         break;
       case 2:
         vectorInicio[0]+=lado+separación+lado;
-        vectorInicio[1]+=lado+separación+lado;
+        vectorInicio[1]+=lado+separación+lado+separación;
         break;
       case 3:
-        vectorInicio[0]+=lado+separación+lado;
+        vectorInicio[0]+=lado;
         break;
       default:
         break;
@@ -123,9 +123,8 @@ class Cuadrado {
   }
 
   resiste () {
-    debugger
     this.quitarVida();
-    return this._vidas < 0;
+    return this._vidas > 0;
   }
 
   //GETTERS // SETTERS

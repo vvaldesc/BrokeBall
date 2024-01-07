@@ -79,14 +79,18 @@ class Tablero{
     //INSTANCIAR TODOS LOS OBJETOS DE NUEVO ME PARECE MENOS ÓPTIMO QUE EDITAR LAS INSTANCIAS EXISTENTES
     this._jsonElementos.Cuadrados.elemento.map((cuadrado) => cuadrado.dibujar());
 
-    this._jsonElementos.Cuadrados.elemento.map((cuadrado) => {
+    /*this._jsonElementos.Cuadrados.elemento.map((cuadrado) => {
       cuadrado.dibujar();
       this.dibujarPunto(cuadrado._x,cuadrado._y);
-    });
+    });*/
 
     this._jsonElementos.bola.elemento.dibujar();
-    this.dibujarPunto(this._jsonElementos.bola.x,this._jsonElementos.bola.y);
+    //this.dibujarPunto(this._jsonElementos.bola.x,this._jsonElementos.bola.y);
+
+    debugger
     this._jsonElementos.pala.elemento.dibujar();
+
+
   }
 
   comprobarColisionBola(){
@@ -106,7 +110,7 @@ class Tablero{
     let colision = {
       objetoColisionado: null,
       vectorAcambiar: null,
-      indexCuadrado: null
+      index: null
     };
 
     let vectorAux = this._jsonElementos.bola.elemento.vectorXY;
@@ -165,16 +169,19 @@ class Tablero{
     [Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY)]
     [Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX)];
       if (valorTableroColisionado === 1
+      /*||
+      valorTableroColisionado === 7*/
       ||
-      valorTableroColisionado === 7
+      valorTableroColisionado === 2
+      ||
+      valorTableroColisionado === 3
         ) {
-          debugger
-        if (valorTableroColisionado === 1) {
+        if (valorTableroColisionado === 1  || valorTableroColisionado === 2 || valorTableroColisionado === 3) {
           const resultado = this.encontrarInstanciaBloque(coordenadasBolaProximoTick, radioComprobarY, radioComprobarX, colision);
           colision.objetoColisionado = resultado.objetoColisionado;
           colision.index = resultado.index;
         }
-        else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
+        //else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
 
 
         let xCuadrado =
@@ -284,7 +291,6 @@ class Tablero{
     //depende de this.comprobarColisionBola()
     if (colision) {
         this.alterarVectorBola(colision);
-        debugger
         if (colision.objetoColisionado instanceof Cuadrado) {
             if(!this.resisteCuadradoColision(colision.objetoColisionado)) this.eliminarCuadrado(colision.index);
         }
@@ -332,5 +338,4 @@ class Tablero{
     ctx.fill();
     ctx.closePath()
   }
-
 }
