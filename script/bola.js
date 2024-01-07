@@ -7,7 +7,7 @@ class Bola{
     this._radio = 15;
     this._velocidad = 1;
     this._vectorXY = [vectorX, vectorY];
-    this._mulVelocidad = 1;
+    this._mulVelocidad = 2;
   }
 
   mover(){

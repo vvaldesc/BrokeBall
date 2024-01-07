@@ -36,7 +36,6 @@ class Tablero{
       y : null,
       ancho : null
     };
-debugger
     let anchoInicialPala=1;
     try {
       this._matrizActual.forEach((fila, y) => fila.forEach((elemento, x) => {
@@ -78,7 +77,6 @@ debugger
   }
 
   mostrarTablero(){
-    console.log("Mostrar"+this._jsonElementos);
     this._jsonElementos.Cuadrados.elemento.map((cuadrado) => cuadrado.dibujar());
     this._jsonElementos.bola.elemento.dibujar();
     this._jsonElementos.pala.elemento.dibujar();
@@ -91,86 +89,123 @@ debugger
     //La bola se mueve pixel por pixel, no por posición de tablero
 
     let coordenadasBolaProximoTick = {
-      x : this._jsonElementos.bola.x + this._jsonElementos.bola.elemento.vectorXY[0],
-      y : this._jsonElementos.bola.y + this._jsonElementos.bola.elemento.vectorXY[1]
-    }
+      x:
+        this._jsonElementos.bola.x +
+        this._jsonElementos.bola.elemento.vectorXY[0],
+      y:
+        this._jsonElementos.bola.y +
+        this._jsonElementos.bola.elemento.vectorXY[1],
+    };
 
     let colision = {
-      objetoColisionado : null,
-      vectorAcambiar : null
-    }
-    this._jsonElementos.Cuadrados.elemento.forEach((cuadrado, index) => {
-      let xCuadrado = cuadrado.x[index];
-      let yCuadrado = cuadrado.y[index];
-    
-      if (xCuadrado - coordenadasBolaProximoTick.x <= tamCasilla / tamCasilla) {
-        colision.objetoColisionado = cuadrado.elemento;
-        colision.vectorAcambiar = "x";
-        console.log("colisionCuadradoX")
-        // Exit the loop
-        colisionaCuadrado = true;
-        return;
-        // vector x * -1
-      } else if (yCuadrado - coordenadasBolaProximoTick.y <= tamCasilla / tamCasilla) {
-        colision.objetoColisionado = cuadrado.elemento;
-        colision.vectorAcambiar = "y";
-        console.log("colisionCuadradoy")
-        colisionaCuadrado = true;
-        return;
-        // vector y * -1
-      }
-    });
-    
-    if (
-      coordenadasBolaProximoTick.x <= this._jsonElementos.pala.x + this._jsonElementos.pala.ancho * 1 &&
-      coordenadasBolaProximoTick.x >= this._jsonElementos.pala.x &&
-      coordenadasBolaProximoTick.y >= this._jsonElementos.pala.y - 1 &&
-      coordenadasBolaProximoTick.y <= this._jsonElementos.pala.y
-    ) {
-      colision.objetoColisionado = this._jsonElementos.pala.elemento;
-      colision.vectorAcambiar = "x";
-      console.log("y proximo - y pala"+coordenadasBolaProximoTick.y - this._jsonElementos.pala.y);
-      console.log("x proximo - x pala"+coordenadasBolaProximoTick.x - this._jsonElementos.pala.x);
-      console.log("colisionPalaX");
-      return colision;
-    } else if (
-      coordenadasBolaProximoTick.y <= this._jsonElementos.pala.y &&
-      coordenadasBolaProximoTick.y >= this._jsonElementos.pala.y - 1 &&
-      coordenadasBolaProximoTick.x >= this._jsonElementos.pala.x &&
-      coordenadasBolaProximoTick.x <= this._jsonElementos.pala.x + this._jsonElementos.pala.ancho * 1
-    ) {
-      colision.objetoColisionado = this._jsonElementos.pala.elemento;
-      console.log("colisionPalaY");
-      colision.vectorAcambiar = "y";
-      return colision;
-    }
-    
+      objetoColisionado: null,
+      vectorAcambiar: null,
+    };
 
-    if (coordenadasBolaProximoTick.x - this._jsonElementos.bola.elemento.radio/tamCasilla <= 0) {
-      console.log(coordenadasBolaProximoTick.x - this._jsonElementos.bola.elemento.radio/tamCasilla);
+    //coordenadasBolaProximoTick.x+=1;
+    //coordenadasBolaProximoTick.y-=1;
+
+
+    //COLISION CON BLOQUE
+    this._jsonElementos.Cuadrados.elemento.some((cuadrado) => {
+      let xCuadrado = cuadrado._x;
+      let yCuadrado = cuadrado._y;
+
+
+      if (Math.abs(xCuadrado - coordenadasBolaProximoTick.x-this._jsonElementos.bola.elemento.radio/tamCasilla) < Math.abs(1)) {   
+        if (Math.abs(yCuadrado - coordenadasBolaProximoTick.y-this._jsonElementos.bola.elemento.radio/tamCasilla) < Math.abs(1)) {
+          
+          //debugger
+
+
+          // xCua 14  yCua 4  //  ptbx 14,49  ptby 2,51
+
+
+
+          // sabiendo el vector unitario de la velocidad bola sé su dirección, esto me da mucha información
+          //los dos ifs me indican que si la bola sigue su rumbo, entra dentro del cuadrado
+          //sabiendo la posición del cuadrado y el vector V sé hacia donde hay que reflejar el mismo
+          let posCuadrado = [xCuadrado,yCuadrado];
+          let uVelocidad = this._jsonElementos.bola.elemento._vectorXY;
+          let bolaProxTick = [coordenadasBolaProximoTick.x,coordenadasBolaProximoTick.y];
+          let posBola = [this._jsonElementos.bola.x,this._jsonElementos.bola.y];
+
+          let diferencialX = Math.abs(posCuadrado[0] - posBola[0]);
+          let diferencialY = Math.abs(posCuadrado[1] - posBola[1]);
+
+          diferencialX > diferencialY ? colision.vectorAcambiar="x" : colision.vectorAcambiar="y";
+
+          colision.objetoColisionado = cuadrado;
+          //colision.vectorAcambiar = "y"; //provisional
+          console.log("colisionCuadradoy");
+        return true; // This will stop the iteration
+        }
+      }
+    
+      return false;
+    });
+    if (colision.objetoColisionado && colision.vectorAcambiar) return colision;    
+
+    if (coordenadasBolaProximoTick.y 
+      + this._jsonElementos.bola.elemento.radio/tamCasilla + 0.1 >= 20){
+        debugger
+        if (coordenadasBolaProximoTick.x > this._jsonElementos.pala.elemento._x &&
+            coordenadasBolaProximoTick.x < this._jsonElementos.pala.elemento._x + this._jsonElementos.pala.ancho) {
+
+          console.log("colisionPala");
+          debugger
+          
+          colision.vectorAcambiar = 
+          coordenadasBolaProximoTick.y 
+              + this._jsonElementos.bola.elemento.radio/tamCasilla 
+              + 0.1 > 20.2 
+                  ? "x" 
+                  : "y";
+      
+
+          colision.elemento=this._jsonElementos.pala.elemento;
+          return colision;
+        }
+
+    }
+
+    if (
+      coordenadasBolaProximoTick.x -
+        this._jsonElementos.bola.elemento.radio / tamCasilla <
+      -1
+    ) {
       colision.objetoColisionado = this;
       console.log("Colisión Pared Izquierda");
-      debugger
       colision.vectorAcambiar = "x";
       return colision;
-    } else if (coordenadasBolaProximoTick.x + this._jsonElementos.bola.elemento.radio/tamCasilla >= this._width) {
+    } else if (
+      coordenadasBolaProximoTick.x +
+        this._jsonElementos.bola.elemento.radio / tamCasilla >
+      this._width / tamCasilla + 1
+    ) {
       colision.objetoColisionado = this;
       console.log("Colisión Pared Derecha");
       colision.vectorAcambiar = "x";
       return colision;
-    } else if (coordenadasBolaProximoTick.y - this._jsonElementos.bola.elemento.radio/tamCasilla <= 0) {
+    } else if (
+      coordenadasBolaProximoTick.y -
+        this._jsonElementos.bola.elemento.radio / tamCasilla <
+      -1
+    ) {
       colision.objetoColisionado = this;
       console.log("Colisión Pared Superior");
       colision.vectorAcambiar = "y";
       return colision;
-
-    } else if (coordenadasBolaProximoTick.y + this._jsonElementos.bola.elemento.radio/tamCasilla >= this._height) {
+    } else if (
+      coordenadasBolaProximoTick.y +
+        this._jsonElementos.bola.elemento.radio / tamCasilla >
+      this._height / tamCasilla + 1
+    ) {
       colision.objetoColisionado = this;
       console.log("Colisión Pared Inferior");
       colision.vectorAcambiar = "y";
       return colision;
     }
-    
 
     return null;
   }
@@ -198,7 +233,6 @@ debugger
   }
 
   actualizarTablero(){
-    console.log("Mover"+this._jsonElementos);
     const colision = this.comprobarColisionBola();
     //COMPROBAR SI LA BOLA PUEDE SEGUIR EL MISMO VECTOR
 
