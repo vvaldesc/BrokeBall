@@ -108,9 +108,9 @@ class Cuadrado {
     if (this._imagen) {
       ctx.drawImage(this._imagen, extraccionImagen.sx, extraccionImagen.sy, extraccionImagen.slado, extraccionImagen.slado, this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);
       
-      /*ctx.globalCompositeOperation = "multiply";
-      ctx.fillStyle = `rgba(0, 0, 0, ${ 0.20 *(this.vidasTipo() - this.vidas) })`; // Color negro semitransparente
-      ctx.fillRect(this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);*/
+      ctx.globalCompositeOperation = "multiply";
+      ctx.fillStyle = `rgba(0, 0, 0, ${ 0.25 *(this.vidasTipo() - this.vidas) })`; // Color negro semitransparente
+      ctx.fillRect(this._x*tamCasilla, this._y*tamCasilla, tamCasilla, tamCasilla);
     
     } else if (this._color) {
       ctx.fillStyle = this._color;

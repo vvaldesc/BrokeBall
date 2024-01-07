@@ -10,14 +10,17 @@ console.log(canvas.width + "  " + canvas.height);
 /*canvas.width = 1000;
 canvas.height = 1000;*/
 
+
+
+
 const juego = new Juego();
 
 
 document.addEventListener("keydown", function (e) {
-  debugger;
-  juego._Tablero._jsonElementos.pala.elemento.mover(e);
+  let LIMtablero = juego._arrNiveles[juego.nivelActual].length*juego.tamCasilla;
+  juego.Tablero._jsonElementos.pala.elemento.mover(e, LIMtablero);
 });
 
 document.addEventListener("keyup", function () {
-    juego._Tablero._jsonElementos.pala.elemento.pararMovimiento();
+    juego.Tablero._jsonElementos.pala.elemento.pararMovimiento();
 });

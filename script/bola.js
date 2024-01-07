@@ -1,13 +1,26 @@
 class Bola{
-  constructor(x, y, visible = true, color = "red", vectorX = 1, vectorY = 1) {
+  constructor(x, y, visible = true, color = "red", vectorX = 1, vectorY = 0.5) {
     this._x = x;
     this._y = y;
     this._visible = visible;
     this._color = color;
     this._radio = 15;
     this._velocidad = 1;
-    this._vectorXY = [vectorX, vectorY];
+    this._vectorXY = this.mantenerModuloUnoUno(vectorX, vectorY);
     this._mulVelocidad = 4;
+  }
+
+  mantenerModuloUnoUno(nuevoVectorX, nuevoVectorY){
+    let moduloGlobal = Math.sqrt(2);
+
+    // Relación proporcional para mantener el módulo
+    let proporcion = moduloGlobal / Math.sqrt(nuevoVectorX**2 + nuevoVectorY**2);
+
+    // Aplicar la relación proporcional a las componentes del vector
+    let nuevoVectorXConModulo = nuevoVectorX * proporcion;
+    let nuevoVectorYConModulo = nuevoVectorY * proporcion;
+
+    return [nuevoVectorXConModulo, nuevoVectorYConModulo];
   }
 
   mover(){
@@ -76,7 +89,7 @@ class Bola{
   }
 
   set vectorXY(value) {
-    this._vectorXY = value;
+    this._vectorXY = this.mantenerModuloUnoUno(value[0],value[1]);
   }
 
 

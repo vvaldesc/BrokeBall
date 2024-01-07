@@ -7,8 +7,9 @@ function traducirObjeto(numeroDeObjeto) {
   }
 }
 
-class Tablero{
+class Tablero {
   constructor(height = 0, width = 0, matrizActual) {
+    this._jugando = null;
     this._height = height;
     this._width = width;
     this._matrizActual = matrizActual;
@@ -17,67 +18,83 @@ class Tablero{
     this.animarTablero();
   }
 
-  inicializarTablero(){
+  inicializarTablero() {
     let jsonCuadrados = {
       elemento: [],
-      x : [],
-      y : []
+      x: [],
+      y: [],
     };
 
     let jsonBola = {
-      elemento : null,
-      x : null,
-      y : null
+      elemento: null,
+      x: null,
+      y: null,
     };
 
     let jsonarrPala = {
-      elemento : null,
-      x : null,
-      y : null,
-      ancho : null
+      elemento: null,
+      x: null,
+      y: null,
+      ancho: null,
     };
-    let anchoInicialPala=1;
+    let anchoInicialPala = 1;
     try {
-      this._matrizActual.forEach((fila, y) => fila.forEach((elemento, x) => {
-        if (elemento >= 1 && elemento <= 3) {
-          let cuadrado = new Cuadrado(x, y, true, elemento);
-          jsonCuadrados.elemento.push(cuadrado);
-          jsonCuadrados.x.push(x);
-          jsonCuadrados.y.push(y);
-        } else if (elemento >= 7 && elemento <= 9) {
-          // LA PALA SIEMPRE INICIARÁ SIENDO TIPO 7
-          if (x - 1 < this._width && this._matrizActual[y][x + 1] !== 7) {
-            let pala = new Pala(x - anchoInicialPala + 1, y, anchoInicialPala, true, elemento);
-            jsonarrPala.elemento = pala;
-            jsonarrPala.ancho = anchoInicialPala;
-            jsonarrPala.x = x;
-            jsonarrPala.y = y;
-          } else {
-            anchoInicialPala++;
+      this._matrizActual.forEach((fila, y) =>
+        fila.forEach((elemento, x) => {
+          if (elemento >= 1 && elemento <= 3) {
+            let cuadrado = new Cuadrado(x, y, true, elemento);
+            jsonCuadrados.elemento.push(cuadrado);
+            jsonCuadrados.x.push(x);
+            jsonCuadrados.y.push(y);
+          } else if (elemento >= 7 && elemento <= 9) {
+            // LA PALA SIEMPRE INICIARÁ SIENDO TIPO 7
+            if (x - 1 < this._width && this._matrizActual[y][x + 1] !== 7) {
+              let pala = new Pala(
+                x - anchoInicialPala + 1,
+                y,
+                anchoInicialPala,
+                true,
+                elemento
+              );
+              jsonarrPala.elemento = pala;
+              jsonarrPala.ancho = anchoInicialPala;
+              jsonarrPala.x = x;
+              jsonarrPala.y = y;
+            } else {
+              anchoInicialPala++;
+            }
+          } else if (elemento === 10) {
+            let bola = new Bola(x, y, true, "red");
+            jsonBola.elemento = bola;
+            jsonBola.x = x;
+            jsonBola.y = y;
           }
-        } else if (elemento === 10) {
-          let bola = new Bola(x, y, true, "red");
-          jsonBola.elemento = bola;
-          jsonBola.x = x;
-          jsonBola.y = y;
-        }
-      }));
-      
-      if (jsonCuadrados.elemento.length === 0 || jsonBola.elemento === null || jsonarrPala.elemento === null)
-       throw new Error("No se crearon instancias necesarias de Bola o arrPala o cuadrado");
+        })
+      );
+
+      if (
+        jsonCuadrados.elemento.length === 0 ||
+        jsonBola.elemento === null ||
+        jsonarrPala.elemento === null
+      )
+        throw new Error(
+          "No se crearon instancias necesarias de Bola o arrPala o cuadrado"
+        );
       return {
-        Cuadrados : jsonCuadrados,
-        bola : jsonBola,
-        pala : jsonarrPala
-      }
+        Cuadrados: jsonCuadrados,
+        bola: jsonBola,
+        pala: jsonarrPala,
+      };
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
-  mostrarTablero(){
+  mostrarTablero() {
     //INSTANCIAR TODOS LOS OBJETOS DE NUEVO ME PARECE MENOS ÓPTIMO QUE EDITAR LAS INSTANCIAS EXISTENTES
-    this._jsonElementos.Cuadrados.elemento.map((cuadrado) => cuadrado.dibujar());
+    this._jsonElementos.Cuadrados.elemento.map((cuadrado) =>
+      cuadrado.dibujar()
+    );
 
     /*this._jsonElementos.Cuadrados.elemento.map((cuadrado) => {
       cuadrado.dibujar();
@@ -87,13 +104,10 @@ class Tablero{
     this._jsonElementos.bola.elemento.dibujar();
     //this.dibujarPunto(this._jsonElementos.bola.x,this._jsonElementos.bola.y);
 
-    debugger
     this._jsonElementos.pala.elemento.dibujar();
-
-
   }
 
-  comprobarColisionBola(){
+  comprobarColisionBola() {
     // la bola mide de radio 20
 
     //Hago estas comprobaciones en memoria de vídeo ya que
@@ -101,31 +115,34 @@ class Tablero{
     let coordenadasBolaProximoTick = {
       x:
         this._jsonElementos.bola.x +
-        (this._jsonElementos.bola.elemento.vectorXY[0] / 30),
+        this._jsonElementos.bola.elemento.vectorXY[0] / 30,
       y:
         this._jsonElementos.bola.y +
-        (this._jsonElementos.bola.elemento.vectorXY[1] / 30),
+        this._jsonElementos.bola.elemento.vectorXY[1] / 30,
     };
 
     let colision = {
       objetoColisionado: null,
       vectorAcambiar: null,
-      index: null
+      index: null,
     };
 
     let vectorAux = this._jsonElementos.bola.elemento.vectorXY;
-    let radioComprobarX = this._jsonElementos.bola.elemento.radio/tamCasilla;
-    let radioComprobarY = this._jsonElementos.bola.elemento.radio/tamCasilla;
-    if (vectorAux[0] > 0) radioComprobarX = - radioComprobarX;
-    if (vectorAux[1] > 0) radioComprobarY = - radioComprobarY;
+    let radioComprobarX = this._jsonElementos.bola.elemento.radio / tamCasilla;
+    let radioComprobarY = this._jsonElementos.bola.elemento.radio / tamCasilla;
+    if (vectorAux[0] > 0) radioComprobarX = -radioComprobarX;
+    if (vectorAux[1] > 0) radioComprobarY = -radioComprobarY;
 
-    this.dibujarPunto(this._jsonElementos.bola.x-radioComprobarX,
-                      this._jsonElementos.bola.y-radioComprobarY);
+    this.dibujarPunto(
+      this._jsonElementos.bola.x - radioComprobarX,
+      this._jsonElementos.bola.y - radioComprobarY
+    );
 
     console.log(this._matrizActual);
     console.log(Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX));
     console.log(Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY));
 
+    //COLISIÓN CONTRA BORDES
     if (
       coordenadasBolaProximoTick.x -
         this._jsonElementos.bola.elemento.radio / tamCasilla <
@@ -161,58 +178,98 @@ class Tablero{
       colision.objetoColisionado = this;
       console.log("Colisión Pared Inferior");
       colision.vectorAcambiar = "y";
+      colision.lado = "inferior";
       return colision;
     }
 
-
-    let valorTableroColisionado = this._matrizActual
-    [Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY)]
-    [Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX)];
-      if (valorTableroColisionado === 1
+    //COLISION CONTRA BLOQUE
+    //NO ENTRA EL 7 (PALA) PORQUE ESA COMPROBACIÓN LA HARÉ EN MEMORIA DE VÍDEO
+    let valorTableroColisionado =
+      this._matrizActual[
+        Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY)
+      ][Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX)];
+    if (
+      valorTableroColisionado === 1 ||
       /*||
       valorTableroColisionado === 7*/
-      ||
-      valorTableroColisionado === 2
-      ||
+      valorTableroColisionado === 2 ||
       valorTableroColisionado === 3
-        ) {
-        if (valorTableroColisionado === 1  || valorTableroColisionado === 2 || valorTableroColisionado === 3) {
-          const resultado = this.encontrarInstanciaBloque(coordenadasBolaProximoTick, radioComprobarY, radioComprobarX, colision);
-          colision.objetoColisionado = resultado.objetoColisionado;
-          colision.index = resultado.index;
-        }
-        //else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
+    ) {
+      if (
+        valorTableroColisionado === 1 ||
+        valorTableroColisionado === 2 ||
+        valorTableroColisionado === 3
+      ) {
+        const resultado = this.encontrarInstanciaBloque(
+          coordenadasBolaProximoTick,
+          radioComprobarY,
+          radioComprobarX,
+          colision
+        );
 
+        colision.objetoColisionado = resultado.objetoColisionado;
+        colision.index = resultado.index;
+      }
+      //else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
 
-        let xCuadrado =
-          colision.objetoColisionado.x;
-        let yCuadrado =
-          colision.objetoColisionado.y;
+      let xCuadrado = colision.objetoColisionado.x;
+      let yCuadrado = colision.objetoColisionado.y;
 
-        let centroCuadradoX = xCuadrado + tamCasilla / tamCasilla / 2;
-        let centroCuadradoY = yCuadrado + tamCasilla / tamCasilla / 2;
+      let centroCuadradoX = xCuadrado + tamCasilla / tamCasilla / 2;
+      let centroCuadradoY = yCuadrado + tamCasilla / tamCasilla / 2;
 
-        console.log("Pos bola y: " + this._jsonElementos.bola.y);
-        console.log("Pos bola x: " + this._jsonElementos.bola.x);
+      console.log("Pos bola y: " + this._jsonElementos.bola.y);
+      console.log("Pos bola x: " + this._jsonElementos.bola.x);
 
-        let vectorAbsoluto = this._jsonElementos.bola.elemento.vectorXY;
-        console.log("Vector: " + vectorAbsoluto);
+      let vectorAbsoluto = this._jsonElementos.bola.elemento.vectorXY;
+      console.log("Vector: " + vectorAbsoluto);
 
-        //Reflexión:
+      //Reflexión:
 
-        console.log(Math.abs(centroCuadradoY - this._jsonElementos.bola.y));
-        if (Math.abs(centroCuadradoY - this._jsonElementos.bola.y) < this._jsonElementos.bola.elemento.radio/tamCasilla) {
-          colision.vectorAcambiar = "x";
-        } else{
-          colision.vectorAcambiar = "y";
-        }
+      console.log(Math.abs(centroCuadradoY - this._jsonElementos.bola.y));
+      if (
+        Math.abs(centroCuadradoY - this._jsonElementos.bola.y) <
+        this._jsonElementos.bola.elemento.radio / tamCasilla
+      ) {
+        colision.vectorAcambiar = "x";
+      } else {
+        colision.vectorAcambiar = "y";
+      }
+      return colision;
+    }
+
+    //COLISION PALA EN MEMORIA DE VÍDEO
+    console.log(this._matrizActual[0].length - 1);
+    console.log(coordenadasBolaProximoTick.x - radioComprobarY);
+
+    if (
+      coordenadasBolaProximoTick.y - radioComprobarY >
+      this._matrizActual[0].length
+    ) {
+      if (
+        coordenadasBolaProximoTick.x - radioComprobarX >
+          this._jsonElementos.pala.elemento._x &&
+        coordenadasBolaProximoTick.x -
+          radioComprobarX -
+          this._jsonElementos.pala.elemento._x <
+          this._jsonElementos.pala.ancho
+      ) {
+        colision.vectorAcambiar = "y";
+        colision.objetoColisionado = this._jsonElementos.pala;
         return colision;
       }
+    }
 
     return null;
   }
 
-  redondearVideoTablero(coordenadasBolaProximoTick,radioComprobarY,radioComprobarX,colision, invertir = false) {
+  redondearVideoTablero(
+    coordenadasBolaProximoTick,
+    radioComprobarY,
+    radioComprobarX,
+    colision,
+    invertir = false
+  ) {
     let vectorAux2 = null;
     if (invertir) {
       if (colision.vectorAcambiar == "x") {
@@ -251,6 +308,22 @@ class Tablero{
           break;
         case "y":
           this._jsonElementos.bola.elemento.vectorXY[1] *= -1;
+          if (colision.objetoColisionado.elemento instanceof Pala) {
+            debugger;
+            let vectorAntiguo = this._jsonElementos.bola.elemento.vectorXY;
+            switch (colision.objetoColisionado.elemento._direccion) {
+              case "derecha":
+                vectorAntiguo[0] += 1;
+                this._jsonElementos.bola.elemento.vectorXY = vectorAntiguo;
+                break;
+              case "izquierda":
+                vectorAntiguo[0] -= 1;
+                this._jsonElementos.bola.elemento.vectorXY = vectorAntiguo;
+                break;
+              default:
+                break;
+            }
+          }
           break;
         default:
           break;
@@ -258,10 +331,22 @@ class Tablero{
     }
   }
 
-  encontrarInstanciaBloque(coordenadasBolaProximoTick,radioComprobarY,radioComprobarX,colision, invertir = false) {
-    let vectorAux2 = this.redondearVideoTablero(coordenadasBolaProximoTick,radioComprobarY,radioComprobarX,colision, invertir);
-    let index = 0
-    let enc = false
+  encontrarInstanciaBloque(
+    coordenadasBolaProximoTick,
+    radioComprobarY,
+    radioComprobarX,
+    colision,
+    invertir = false
+  ) {
+    let vectorAux2 = this.redondearVideoTablero(
+      coordenadasBolaProximoTick,
+      radioComprobarY,
+      radioComprobarX,
+      colision,
+      invertir
+    );
+    let index = 0;
+    let enc = false;
     while (!enc && index < this._jsonElementos.Cuadrados.y.length) {
       let vectorAux = [
         this._jsonElementos.Cuadrados.x[index],
@@ -272,70 +357,112 @@ class Tablero{
         enc = true;
         colision.objetoColisionado =
           this._jsonElementos.Cuadrados.elemento[index];
-          return { objetoColisionado: colision.objetoColisionado, index: index };
-        }
+        return { objetoColisionado: colision.objetoColisionado, index: index };
+      }
 
       index++;
     }
-    if (!colision.objetoColisionado) return this.encontrarInstanciaBloque(coordenadasBolaProximoTick,radioComprobarY,radioComprobarX,colision, true);
+    if (!colision.objetoColisionado)
+      return this.encontrarInstanciaBloque(
+        coordenadasBolaProximoTick,
+        radioComprobarY,
+        radioComprobarX,
+        colision,
+        true
+      );
   }
 
-  resisteCuadradoColision(cuadrado){
+  resisteCuadradoColision(cuadrado) {
     return cuadrado.resiste();
   }
 
-  actualizarTablero(){
+  perder(colision){
+    if (colision.objetoColisionado instanceof Tablero)
+      return colision.lado == "inferior";
+  }
+
+  finPartida(colision) {
+    if (this.perder(colision)) {
+      console.log("perdido");
+      return true;
+    } else if (this._jsonElementos.Cuadrados.elemento.length == 0) {
+      console.log("ganado");
+      return true;
+    }
+  }
+
+  actualizarTablero() {
     //COMPROBAR SI LA BOLA PUEDE SEGUIR EL MISMO VECTOR
     const colision = this.comprobarColisionBola();
 
-    //depende de this.comprobarColisionBola()
-    if (colision) {
-        this.alterarVectorBola(colision);
-        if (colision.objetoColisionado instanceof Cuadrado) {
-            if(!this.resisteCuadradoColision(colision.objetoColisionado)) this.eliminarCuadrado(colision.index);
+      //depende de this.comprobarColisionBola()
+      if (colision) {
+        debugger
+        if (this.finPartida(colision)) {
+          debugger
+          console.log("fin");
+          clearInterval(this._jugando);
+          this._jugando = null;
+        } else {
+          this.alterarVectorBola(colision);
+          if (colision.objetoColisionado instanceof Cuadrado) {
+            if (!this.resisteCuadradoColision(colision.objetoColisionado))
+              this.eliminarCuadrado(colision.index);
+          }
         }
+
+
+
+      }
+
+      let bolaAux = this._jsonElementos.bola.elemento;
+      bolaAux.mover();
+      this._jsonElementos.bola = {
+        elemento: bolaAux,
+        x: bolaAux._x,
+        y: bolaAux._y,
+      };
+      //this._jsonElementos.pala.elemento.dibujar();
     }
+  
+  
 
-    let bolaAux = this._jsonElementos.bola.elemento;
-    bolaAux.mover();
-    this._jsonElementos.bola={ elemento : bolaAux, x : bolaAux._x, y : bolaAux._y};
-    //this._jsonElementos.pala.elemento.dibujar();
-  }
-
-  eliminarCuadrado(index){
-    this._matrizActual[this._jsonElementos.Cuadrados.y[index]][this._jsonElementos.Cuadrados.x[index]] = 0;
+  eliminarCuadrado(index) {
+    this._matrizActual[this._jsonElementos.Cuadrados.y[index]][
+      this._jsonElementos.Cuadrados.x[index]
+    ] = 0;
     this._jsonElementos.Cuadrados.elemento.splice(index, 1);
     this._jsonElementos.Cuadrados.x.splice(index, 1);
     this._jsonElementos.Cuadrados.y.splice(index, 1);
   }
 
-  animarTablero(){
-    setInterval(() => {
+  animarTablero() {
+    this._jugando = setInterval(() => {
       this.actualizarTablero();
       this.borrarTablero();
       this.mostrarTablero();
-    }, 1000/MAXfps);
+    }, 1000 / MAXfps);
   }
 
-  borrarTablero(){
-    canvas.width = nivel_1[0].length*tamCasilla;
-    canvas.height = nivel_1.length*tamCasilla;
+  borrarTablero() {
+    canvas.width = nivel_1[0].length * tamCasilla;
+    canvas.height = nivel_1.length * tamCasilla;
   }
-  
+
   hayCuadrados() {
-      for (const fila of this._matrizActual) {
-        for (const numero of fila) {
-          if (numero == 1 || numero == 2 || numero == 3 ) return true;
-        }
+    for (const fila of this._matrizActual) {
+      for (const numero of fila) {
+        if (numero == 1 || numero == 2 || numero == 3) return true;
       }
-      return false;
+    }
+    return false;
   }
 
-  dibujarPunto(x,y) {
+  dibujarPunto(x, y) {
     ctx.beginPath();
-    ctx.arc(x*tamCasilla, y*tamCasilla, 5, 0, 2 * Math.PI);
+    ctx.arc(x * tamCasilla, y * tamCasilla, 5, 0, 2 * Math.PI);
     ctx.fillStyle = "green";
     ctx.fill();
-    ctx.closePath()
+    ctx.closePath();
   }
 }
