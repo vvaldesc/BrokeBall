@@ -1,5 +1,5 @@
 class Bola{
-  constructor(x, y, visible = true, color = "red", vectorX = -1, vectorY = 1) {
+  constructor(x, y, visible = true, color = "red", vectorX = 1, vectorY = 1) {
     this._x = x;
     this._y = y;
     this._visible = visible;
@@ -7,7 +7,7 @@ class Bola{
     this._radio = 15;
     this._velocidad = 1;
     this._vectorXY = [vectorX, vectorY];
-    this._mulVelocidad = 2;
+    this._mulVelocidad = 4;
   }
 
   mover(){
@@ -78,6 +78,7 @@ class Bola{
   set vectorXY(value) {
     this._vectorXY = value;
   }
+
 
   toString() {
     return `Bola: 

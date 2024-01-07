@@ -11,7 +11,4 @@ console.log(canvas.width+"  "+canvas.height);
 canvas.height = 1000;*/
 
 
-
-
-debugger
 const juego = new Juego();
