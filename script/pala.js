@@ -11,7 +11,7 @@ class Pala {
 
     this._imagen = null;
     this._color = color;
-    this._mulVelocidad = 1.2;
+    this._mulVelocidad = 1/5;
 
     this._moviendo = null;
     this._direccion = null;
@@ -35,17 +35,19 @@ class Pala {
       this._moviendo = setInterval(() => {
         switch (e.key) {
           case 'ArrowLeft':
+            debugger
             // Mover hacia la izquierda
             if (this._x > 0) {
-              this._x -= 1 / 5 * this._mulVelocidad;
+              this._x -= 1 * this._mulVelocidad;
               this._direccion = "izquierda";
             }
             break;
   
           case 'ArrowRight':
             // Mover hacia la derecha
-            if ((this._x + this._width + 1) * tamCasilla < LIM) {
-              this._x += 1 / 5 * this._mulVelocidad;
+            debugger
+            if ((this._x + this._width - 1) * tamCasilla < LIM) {
+              this._x += 1 * this._mulVelocidad;
               this._direccion = "derecha";
             }
             break;
@@ -59,7 +61,6 @@ class Pala {
   
 
   pararMovimiento() {
-    debugger
     clearInterval(this._moviendo);
     this._moviendo = null;
     this._direccion = null;

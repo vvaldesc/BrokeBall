@@ -9,26 +9,28 @@ function traducirObjeto(numeroDeObjeto) {
 
 class Tablero {
   constructor(arrMatrices, vuX = 0, vuY = 1) {
-    debugger
+    if (vuX == 0 && vuY == 0) vuY = 1;
+
     this._nivel=0;
     this._vidas=3;
+
     this._arrMatrices = arrMatrices;
+    this._height = null;
+    this._width = null;
+    this._matrizActual = null;
 
-    this._matrizActual = arrMatrices[this._nivel];
-
-    this._height = this._matrizActual.length;
-    this._width = this._matrizActual[0].length;
-    this._height = this._matrizActual.length*tamCasilla;
-    this._width = this._matrizActual[0].length*tamCasilla;
     this._jsonElementos = this.inicializarTablero([vuX,vuY]);
-    //this.mostrarTablero();
+
     this._animacionTablero = this.animarTablero();
 
   }
 
   inicializarTablero([vuX,vuY]) {
-    debugger
+
     this._matrizActual = this._arrMatrices[this._nivel];
+    this._height = this._matrizActual.length*tamCasilla;
+    this._width = this._matrizActual[0].length*tamCasilla;
+
     let jsonCuadrados = {
       elemento: [],
       x: [],
@@ -129,10 +131,10 @@ class Tablero {
     let coordenadasBolaProximoTick = {
       x:
         this._jsonElementos.bola.x +
-        this._jsonElementos.bola.elemento.vectorXY[0] / 30,
+        this._jsonElementos.bola.elemento.vectorXY[0] / tamCasilla,
       y:
         this._jsonElementos.bola.y +
-        this._jsonElementos.bola.elemento.vectorXY[1] / 30,
+        this._jsonElementos.bola.elemento.vectorXY[1] / tamCasilla,
     };
 
     let colision = {
@@ -141,21 +143,7 @@ class Tablero {
       index: null,
     };
 
-    let vectorAux = this._jsonElementos.bola.elemento.vectorXY;
-    let radioComprobarX = this._jsonElementos.bola.elemento.radio / tamCasilla;
-    let radioComprobarY = this._jsonElementos.bola.elemento.radio / tamCasilla;
-    if (vectorAux[0] > 0) radioComprobarX = -radioComprobarX;
-    if (vectorAux[1] > 0) radioComprobarY = -radioComprobarY;
-
-    this.dibujarPunto(
-      this._jsonElementos.bola.x - radioComprobarX,
-      this._jsonElementos.bola.y - radioComprobarY
-    );
-
-    console.log(this._matrizActual);
-    console.log(Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX));
-    console.log(Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY));
-
+    debugger
     //COLISIÓN CONTRA BORDES
     if (
       coordenadasBolaProximoTick.x -
@@ -163,7 +151,7 @@ class Tablero {
       0
     ) {
       colision.objetoColisionado = this;
-      console.log("Colisión Pared Izquierda");
+      //PARED IZQ
       colision.vectorAcambiar = "x";
       return colision;
     } else if (
@@ -172,7 +160,7 @@ class Tablero {
       this._width / tamCasilla
     ) {
       colision.objetoColisionado = this;
-      console.log("Colisión Pared Derecha");
+      //PARED DCH
       colision.vectorAcambiar = "x";
       return colision;
     } else if (
@@ -181,7 +169,7 @@ class Tablero {
       0
     ) {
       colision.objetoColisionado = this;
-      console.log("Colisión Pared Superior");
+      //PARED SUP
       colision.vectorAcambiar = "y";
       return colision;
     } else if (
@@ -190,75 +178,88 @@ class Tablero {
       this._height / tamCasilla
     ) {
       colision.objetoColisionado = this;
-      console.log("Colisión Pared Inferior");
+      //PARED INF
       colision.vectorAcambiar = "y";
       colision.lado = "inferior";
       return colision;
     }
 
+
+
+    let vectorAux = this._jsonElementos.bola.elemento.vectorXY;
+    /*let radioComprobarX = this._jsonElementos.bola.elemento.radio / tamCasilla;
+    let radioComprobarY = this._jsonElementos.bola.elemento.radio / tamCasilla;
+
+    if (vectorAux[0] > 0) radioComprobarX = -radioComprobarX;
+    if (vectorAux[1] > 0) radioComprobarY = -radioComprobarY;*/
+
+    let radioComprobarX = vectorAux[0] * this._jsonElementos.bola.elemento.radio / tamCasilla * (-1);
+    let radioComprobarY = vectorAux[1] * this._jsonElementos.bola.elemento.radio / tamCasilla * (-1);
+
+    this.dibujarPunto(
+      this._jsonElementos.bola.x - radioComprobarX,
+      this._jsonElementos.bola.y - radioComprobarY
+    );
+
     //COLISION CONTRA BLOQUE
     //NO ENTRA EL 7 (PALA) PORQUE ESA COMPROBACIÓN LA HARÉ EN MEMORIA DE VÍDEO
-    let valorTableroColisionado =
-      this._matrizActual[
-        Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY)
-      ][Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX)];
-    if (
-      valorTableroColisionado === 1 ||
-      /*||
-      valorTableroColisionado === 7*/
-      valorTableroColisionado === 2 ||
-      valorTableroColisionado === 3
-    ) {
+      debugger
+      if (coordenadasBolaProximoTick.y - radioComprobarY < 10) {
+        let valorTableroColisionado =
+        this._matrizActual[
+          Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY)
+        ][Math.trunc(coordenadasBolaProximoTick.x - radioComprobarX)];
       if (
         valorTableroColisionado === 1 ||
+        /*||
+        valorTableroColisionado === 7*/
         valorTableroColisionado === 2 ||
         valorTableroColisionado === 3
       ) {
-        const resultado = this.encontrarInstanciaBloque(
-          coordenadasBolaProximoTick,
-          radioComprobarY,
-          radioComprobarX,
-          colision
-        );
-
-        colision.objetoColisionado = resultado.objetoColisionado;
-        colision.index = resultado.index;
+        if (
+          valorTableroColisionado === 1 ||
+          valorTableroColisionado === 2 ||
+          valorTableroColisionado === 3
+        ) {
+          const resultado = this.encontrarInstanciaBloque(
+            coordenadasBolaProximoTick,
+            radioComprobarY,
+            radioComprobarX,
+            colision
+          );
+  
+          colision.objetoColisionado = resultado.objetoColisionado;
+          colision.index = resultado.index;
+        }
+        //else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
+  
+        //let xCuadrado = colision.objetoColisionado.x;
+        let yCuadrado = colision.objetoColisionado.y;
+  
+        //let centroCuadradoX = xCuadrado + tamCasilla / tamCasilla / 2;
+        let centroCuadradoY = yCuadrado + tamCasilla / tamCasilla / 2;
+  
+        //let vectorAbsoluto = this._jsonElementos.bola.elemento.vectorXY;
+  
+        //Reflexión:
+        if (
+          Math.abs(centroCuadradoY - this._jsonElementos.bola.y) <
+          this._jsonElementos.bola.elemento.radio / tamCasilla
+        ) {
+          colision.vectorAcambiar = "x";
+        } else {
+          colision.vectorAcambiar = "y";
+        }
+        return colision;
       }
-      //else if (valorTableroColisionado === 7) colision.objetoColisionado = this._jsonElementos.pala.elemento;
-
-      let xCuadrado = colision.objetoColisionado.x;
-      let yCuadrado = colision.objetoColisionado.y;
-
-      let centroCuadradoX = xCuadrado + tamCasilla / tamCasilla / 2;
-      let centroCuadradoY = yCuadrado + tamCasilla / tamCasilla / 2;
-
-      console.log("Pos bola y: " + this._jsonElementos.bola.y);
-      console.log("Pos bola x: " + this._jsonElementos.bola.x);
-
-      let vectorAbsoluto = this._jsonElementos.bola.elemento.vectorXY;
-      console.log("Vector: " + vectorAbsoluto);
-
-      //Reflexión:
-
-      console.log(Math.abs(centroCuadradoY - this._jsonElementos.bola.y));
-      if (
-        Math.abs(centroCuadradoY - this._jsonElementos.bola.y) <
-        this._jsonElementos.bola.elemento.radio / tamCasilla
-      ) {
-        colision.vectorAcambiar = "x";
-      } else {
-        colision.vectorAcambiar = "y";
       }
-      return colision;
-    }
+
+
 
     //COLISION PALA EN MEMORIA DE VÍDEO
-    console.log(this._matrizActual[0].length - 1);
-    console.log(coordenadasBolaProximoTick.x - radioComprobarY);
-
     if (
       coordenadasBolaProximoTick.y - radioComprobarY >
-      this._matrizActual[0].length
+      this._matrizActual.length - 1
     ) {
       if (
         coordenadasBolaProximoTick.x - radioComprobarX >
@@ -407,7 +408,6 @@ class Tablero {
       this._jsonElementos = this.inicializarTablero([-1,1]);
       return true;
     } else if (this._jsonElementos.Cuadrados.elemento.length == 0) {
-      debugger
       console.log("ganado");
       this._vidas = 3
       this._nivel++;
