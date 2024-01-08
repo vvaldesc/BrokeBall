@@ -22,6 +22,7 @@ function empezarJuego(e) {
   menu.style.display="none";
   main.style.display="none";
 
+
   canvas.style.display="block";
   canvas.width = nivel_1[0].length * tamCasilla;
   canvas.height = nivel_1.length * tamCasilla;

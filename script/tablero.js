@@ -12,7 +12,7 @@ class Tablero {
     if (vuX == 0 && vuY == 0) vuY = 1;
 
     this._nivel=0;
-    this._vidas=null;
+    this._vidas=3;
 
     this._arrMatrices = arrMatrices;
     this._height = null;
@@ -30,7 +30,8 @@ class Tablero {
     this._matrizActual = this._arrMatrices[this._nivel];
     this._height = this._matrizActual.length*tamCasilla;
     this._width = this._matrizActual[0].length*tamCasilla;
-    this._vidas = 3;
+    //this._vidas = 3;
+    //this._vidas = 2;
 
     let jsonCuadrados = {
       elemento: [],
@@ -122,6 +123,10 @@ class Tablero {
     //this.dibujarPunto(this._jsonElementos.bola.x,this._jsonElementos.bola.y);
 
     this._jsonElementos.pala.elemento.dibujar();
+
+    this.mostrarTexto("Vidas: "+ this._vidas.toString() , 20);
+    this.mostrarTexto("Nivel: "+ (this._nivel+1).toString() , this._width - 80);
+
   }
 
   comprobarColisionBola() {
@@ -203,7 +208,7 @@ class Tablero {
 
     //COLISION CONTRA BLOQUE
     //NO ENTRA EL 7 (PALA) PORQUE ESA COMPROBACIÓN LA HARÉ EN MEMORIA DE VÍDEO
-      if (coordenadasBolaProximoTick.y - radioComprobarY < 10) {
+      if (coordenadasBolaProximoTick.y - radioComprobarY < this._matrizActual.length - 1) {
         let valorTableroColisionado =
         this._matrizActual[
           Math.trunc(coordenadasBolaProximoTick.y - radioComprobarY)
@@ -418,10 +423,11 @@ class Tablero {
     }
   }
 
-  mostrarTexto(txt){
-      ctx.font = "italic 30px Arial";
-      ctx.fillStyle = "red";
-      ctx.fillText(txt, 200, 150);
+  mostrarTexto(txt , x){
+      ctx.font = "bold 17px Arial";
+      ctx.fillStyle = "black";
+      debugger
+      ctx.fillText(txt, x, (this._matrizActual.length) * tamCasilla - 35);
   }
 
   perderVida(){

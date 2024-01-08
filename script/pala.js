@@ -1,6 +1,5 @@
 class Pala {
   constructor(x, y, ancho, visible = false, tipo = 7, color = "yellow") {
-    
     this._x = x;
     this._y = y;
     this._width = ancho;
