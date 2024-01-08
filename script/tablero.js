@@ -143,7 +143,6 @@ class Tablero {
       index: null,
     };
 
-    debugger
     //COLISIÓN CONTRA BORDES
     if (
       coordenadasBolaProximoTick.x -
@@ -203,7 +202,6 @@ class Tablero {
 
     //COLISION CONTRA BLOQUE
     //NO ENTRA EL 7 (PALA) PORQUE ESA COMPROBACIÓN LA HARÉ EN MEMORIA DE VÍDEO
-      debugger
       if (coordenadasBolaProximoTick.y - radioComprobarY < 10) {
         let valorTableroColisionado =
         this._matrizActual[
@@ -395,24 +393,21 @@ class Tablero {
       return colision.lado == "inferior";
   }
 
-  finPartida(colision) {
+  compobarFinNivel(colision) {
     if (this.perder(colision)) {
-      this._vidas-=1;
-      if (this._vidas==0) {
-        this.mostrarTexto("Has perdido");
-        clearInterval(this._animacionTablero);
-        this._animacionTablero = null;
-        return true;
-      }
+      return "colisionInferior";
+      //this._vidas-=1;
+      /*this._vidas-=1;
       console.log("perdido");
       this._jsonElementos = this.inicializarTablero([-1,1]);
-      return true;
+      return true;*/
     } else if (this._jsonElementos.Cuadrados.elemento.length == 0) {
-      console.log("ganado");
+      return "nivelGanado";
+      /*console.log("ganado");
       this._vidas = 3
       this._nivel++;
       this._jsonElementos = this.inicializarTablero([-1,1]);
-      return true;
+      return true;*/
     }
   }
 
@@ -438,22 +433,76 @@ class Tablero {
       ctx.fillText(txt, 200, 150);
   }
 
+  perderVida(){
+    this._vidas -= 1;
+  }
+
+  comprobarPerderJuego(){
+    return this._vidas === 0;
+  }
+
+  juegoGanado(){
+    return this._nivel === 2;
+  }
+
+  finJuego(){
+    clearInterval(this._animacionTablero);
+    this._animacionTablero = null;
+    canvas.style.display="none";
+    divfinal.style.display="flex";
+    main.style.display="flex";
+  }
+
+  generarVectorAleatorio() {
+    let x, y;
+    do {
+      x = Math.floor(Math.random() * 21) - 10;
+      y = Math.floor(Math.random() * 21) - 10;
+    } while (x === 0 && y === 0); // Repetir si ambos son cero
+    return [x, y];
+  }
+
+  subirNivel(){
+    this._nivel++;
+    this._jsonElementos = this.inicializarTablero(this.generarVectorAleatorio());
+  }
+
+  perderJuego(){
+    clearInterval(this._animacionTablero);
+    this._animacionTablero = null;
+    canvas.style.display="none";
+    divfinalPerdido.style.display="block";
+    main.style.display="block";
+  }
+
+  reiniciarNivel(){
+    this._jsonElementos = this.inicializarTablero(this.generarVectorAleatorio());
+  }
+
   actualizarTablero() {
     //COMPROBAR SI LA BOLA PUEDE SEGUIR EL MISMO VECTOR
     const colision = this.comprobarColisionBola();
 
-      //depende de this.comprobarColisionBola()
       if (colision) {
-        if (this.finPartida(colision)) {
-          console.log("fin");
-          //this.comprobarPerdidoJuego();
-          //this.comprobarGanadoJuego();
-        } else {
-          this.alterarVectorBola(colision);
-          if (colision.objetoColisionado instanceof Cuadrado) {
-            if (!this.resisteCuadradoColision(colision.objetoColisionado))
-              this.eliminarCuadrado(colision.index);
-          }
+        switch (this.compobarFinNivel(colision)) {
+          case "colisionInferior":
+            this.perderVida();
+            debugger
+            this.comprobarPerderJuego() ? this.perderJuego() : this.reiniciarNivel();
+            break;
+          case "nivelGanado":
+            this.juegoGanado() ? this.finJuego() : this.subirNivel();
+            break;
+          default:
+            break;
+        }
+
+        //depende de this.comprobarColisionBola()
+        this.alterarVectorBola(colision);
+
+        if (colision.objetoColisionado instanceof Cuadrado) {
+          if (!this.resisteCuadradoColision(colision.objetoColisionado))
+            this.eliminarCuadrado(colision.index);
         }
       }
 

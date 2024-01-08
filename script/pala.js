@@ -35,7 +35,6 @@ class Pala {
       this._moviendo = setInterval(() => {
         switch (e.key) {
           case 'ArrowLeft':
-            debugger
             // Mover hacia la izquierda
             if (this._x > 0) {
               this._x -= 1 * this._mulVelocidad;
@@ -45,7 +44,6 @@ class Pala {
   
           case 'ArrowRight':
             // Mover hacia la derecha
-            debugger
             if ((this._x + this._width - 1) * tamCasilla < LIM) {
               this._x += 1 * this._mulVelocidad;
               this._direccion = "derecha";
