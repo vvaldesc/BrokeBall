@@ -13,9 +13,8 @@ class Pala {
     this._color = color;
     this._mulVelocidad = 1.2;
 
-    this._moviendo = "derecha";
+    this._moviendo = null;
     this._direccion = null;
-
 /*
     if (tieneImagen()) {
       try {
@@ -32,22 +31,21 @@ class Pala {
   }
 
   mover(e, LIM) {
-    if (this.moviendo === null) {
-      this.moviendo = setInterval(() => {
+    if (!this._moviendo || (this._moviendo === "izquierda" && e.key === 'ArrowLeft') || (this._moviendo === "derecha" && e.key === 'ArrowRight')) {
+      this._moviendo = setInterval(() => {
         switch (e.key) {
           case 'ArrowLeft':
             // Mover hacia la izquierda
             if (this._x > 0) {
-              this._x -= 1 / 10 * this._mulVelocidad;
+              this._x -= 1 / 5 * this._mulVelocidad;
               this._direccion = "izquierda";
             }
             break;
   
           case 'ArrowRight':
             // Mover hacia la derecha
-            debugger
             if ((this._x + this._width + 1) * tamCasilla < LIM) {
-              this._x += 1 / 8 * this._mulVelocidad;
+              this._x += 1 / 5 * this._mulVelocidad;
               this._direccion = "derecha";
             }
             break;
@@ -58,10 +56,14 @@ class Pala {
     }
   }
   
+  
 
   pararMovimiento() {
-    clearInterval(this.moviendo);
-    this.moviendo = null;
+    debugger
+    clearInterval(this._moviendo);
+    this._moviendo = null;
+    this._direccion = null;
+
   }
 
   velocidadTipo(){

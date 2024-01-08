@@ -8,17 +8,17 @@ function traducirObjeto(numeroDeObjeto) {
 }
 
 class Tablero {
-  constructor(height = 0, width = 0, matrizActual) {
+  constructor(height = 0, width = 0, matrizActual, vuX = 0, vuY = 1) {
     this._jugando = null;
     this._height = height;
     this._width = width;
     this._matrizActual = matrizActual;
-    this._jsonElementos = this.inicializarTablero();
+    this._jsonElementos = this.inicializarTablero([vuX,vuY]);
     //this.mostrarTablero();
     this.animarTablero();
   }
 
-  inicializarTablero() {
+  inicializarTablero([vuX,vuY]) {
     let jsonCuadrados = {
       elemento: [],
       x: [],
@@ -64,7 +64,8 @@ class Tablero {
               anchoInicialPala++;
             }
           } else if (elemento === 10) {
-            let bola = new Bola(x, y, true, "red");
+            debugger
+            let bola = new Bola(x, y, true, "red", vuX, vuY);
             jsonBola.elemento = bola;
             jsonBola.x = x;
             jsonBola.y = y;
