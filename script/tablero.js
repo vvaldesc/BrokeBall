@@ -12,7 +12,7 @@ class Tablero {
     if (vuX == 0 && vuY == 0) vuY = 1;
 
     this._nivel=0;
-    this._vidas=3;
+    this._vidas=null;
 
     this._arrMatrices = arrMatrices;
     this._height = null;
@@ -30,6 +30,7 @@ class Tablero {
     this._matrizActual = this._arrMatrices[this._nivel];
     this._height = this._matrizActual.length*tamCasilla;
     this._width = this._matrizActual[0].length*tamCasilla;
+    this._vidas = 3;
 
     let jsonCuadrados = {
       elemento: [],
@@ -78,7 +79,7 @@ class Tablero {
               anchoInicialPala++;
             }
           } else if (elemento === 10) {
-            let bola = new Bola(x, y, true, "red", vuX, vuY);
+            let bola = new Bola(x, y, true, "red", vuX, vuY, this._nivel);
             jsonBola.elemento = bola;
             jsonBola.x = x;
             jsonBola.y = y;
@@ -396,19 +397,9 @@ class Tablero {
   compobarFinNivel(colision) {
     if (this.perder(colision)) {
       return "colisionInferior";
-      //this._vidas-=1;
-      /*this._vidas-=1;
-      console.log("perdido");
-      this._jsonElementos = this.inicializarTablero([-1,1]);
-      return true;*/
     } else if (this._jsonElementos.Cuadrados.elemento.length == 0) {
       return "nivelGanado";
-      /*console.log("ganado");
-      this._vidas = 3
-      this._nivel++;
-      this._jsonElementos = this.inicializarTablero([-1,1]);
-      return true;*/
-    }
+    } else {return undefined;}
   }
 
   comprobarGanadoJuego(){
@@ -513,7 +504,6 @@ class Tablero {
         x: bolaAux._x,
         y: bolaAux._y,
       };
-      //this._jsonElementos.pala.elemento.dibujar();
     }
 
   eliminarCuadrado(index) {
@@ -534,8 +524,8 @@ class Tablero {
   }
 
   borrarTablero() {
-    canvas.width = nivel_1[0].length * tamCasilla;
-    canvas.height = nivel_1.length * tamCasilla;
+    canvas.width = this._width;
+    canvas.height = this._height;
   }
 
   hayCuadrados() {

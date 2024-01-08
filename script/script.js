@@ -9,7 +9,6 @@ let botonStart = document.getElementById("botonStart");
 divfinal.style.display="none";
 divfinalPerdido.style.display="none";
 
-
 function generarVectorAleatorio() {
   let x, y;
   do {
@@ -19,11 +18,9 @@ function generarVectorAleatorio() {
   return [x, y];
 }
 
-
 function empezarJuego(e) {
   menu.style.display="none";
   main.style.display="none";
-
 
   canvas.style.display="block";
   canvas.width = nivel_1[0].length * tamCasilla;
@@ -42,10 +39,10 @@ function empezarJuego(e) {
   document.addEventListener("keyup", function () {
       juego.Tablero._jsonElementos.pala.elemento.pararMovimiento();
   });
+
+  document.addEventListener("keydown", function (e) {
+    if(e.key === " ") juego.Tablero._jsonElementos.pala.elemento.usarHabilidad(e, {habilidad: 0});
+  });
 }
-
-
-
-
 
 botonStart.addEventListener("click", empezarJuego);

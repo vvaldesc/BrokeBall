@@ -11,7 +11,6 @@ canvas {
 }
 
 .container{
-    border: 1px solid red;
     min-width: 600px;
     max-width: 1300px;
     width: 80%;

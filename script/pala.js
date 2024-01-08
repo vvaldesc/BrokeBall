@@ -15,19 +15,6 @@ class Pala {
 
     this._moviendo = null;
     this._direccion = null;
-/*
-    if (tieneImagen()) {
-      try {
-        this._imagen = document.createElement("img");
-        this._imagen.src = imagenTipo(this._tipo);
-      } catch (error) {
-        console.error("Error buscando imagen:", error.message);
-      }
-    } else if (color) {
-      this._color = color;
-    } else {
-      console.error("error no hay color ni imagen");
-    }*/
   }
 
   mover(e, LIM) {
@@ -55,8 +42,6 @@ class Pala {
       }, 1000 / MAXfps);
     }
   }
-  
-  
 
   pararMovimiento() {
     clearInterval(this._moviendo);
@@ -86,8 +71,26 @@ class Pala {
     return this._tipo >= 7 && this._tipo <= 9;
   }
 
-  usarObjeto() {
-    return juego.traducirObjeto();
+  usarHabilidad(e, habilidadJSON) {
+    switch (habilidadJSON.habilidad) {
+      case 0:
+        this.habilidadVelocidadPala();
+        break;
+      default:
+        break;
+    }
+  }
+
+  habilidadVelocidadPala(){
+    // Establecer el color inicial y la multiplicación de velocidad
+    this._color = "pink";
+    this._mulVelocidad += 1/5;
+    // Ejecutar las líneas después de 5 segundos
+    setTimeout(() => {
+      // Cambiar el color y ajustar la multiplicación de velocidad después de 5 segundos
+      this._color = "yellow";
+      this._mulVelocidad -= 1/5;
+    }, 5000);
   }
 
   dibujar() {

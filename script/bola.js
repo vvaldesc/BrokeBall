@@ -1,5 +1,5 @@
 class Bola{
-  constructor(x, y, visible = true, color = "red", vectorX = 1, vectorY = 0.5) {
+  constructor(x, y, visible = true, color = "red", vectorX = 1, vectorY = 0.5, sumarMultiplicador = 0) {
     this._x = x;
     this._y = y;
     this._visible = visible;
@@ -7,7 +7,7 @@ class Bola{
     this._radio = 15;
     this._velocidad = 1;
     this._vectorXY = this.mantenerModuloUnoUno(vectorX, vectorY);
-    this._mulVelocidad = 4;
+    this._mulVelocidad = 7/2 + sumarMultiplicador;
   }
 
   mantenerModuloUnoUno(nuevoVectorX, nuevoVectorY){
