@@ -1,12 +1,59 @@
+@font-face {
+    font-family: "pixelThaleah";
+    src: url("../assets/fount/ThaleahFat.ttf");
+}
+
 canvas {
     border: 1px solid #000;
     margin: auto;
     background-color: aliceblue;
-    display: block;
+    display: none;
 }
 
 .container{
-    width: 1000px;
+    border: 1px solid red;
+    min-width: 600px;
+    max-width: 1300px;
+    width: 80%;
     margin: auto;
     background-color: rgb(236, 236, 236);
+}
+
+main{
+    height: 500px;
+    background-image: url(../assets/texturas/simon-sanchez-madera-tilex1.jpg);
+    background-size: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu{
+    background-color: rgba(255, 255, 255, 0.432);
+    width: 450px;
+    max-width: 90%;
+    height: 400px;
+    border-radius: 15px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+a{
+    display: block;
+    width: 100px;
+    height: 80px;
+    background-size: contain;
+    background-image: url(../assets/img/—Pngtree—start\ button\ in\ pixel\ art_7949383\ \(1\).png);
+}
+
+h1, p{
+    font-family: 'pixelThaleah';
+    color: rgb(255, 238, 0);
+    font-size: 4em;
+    text-shadow: -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000;
+    text-align: center;
+    display: block;
 }

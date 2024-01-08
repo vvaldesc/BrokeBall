@@ -8,21 +8,33 @@ function traducirObjeto(numeroDeObjeto) {
 }
 
 class Tablero {
-  constructor(height = 0, width = 0, matrizActual, vuX = 0, vuY = 1) {
-    this._jugando = null;
-    this._height = height;
-    this._width = width;
-    this._matrizActual = matrizActual;
+  constructor(arrMatrices, vuX = 0, vuY = 1) {
+    debugger
+    this._nivel=0;
+    this._vidas=3;
+    this._arrMatrices = arrMatrices;
+
+    this._matrizActual = arrMatrices[this._nivel];
+
+    this._height = this._matrizActual.length;
+    this._width = this._matrizActual[0].length;
+    this._height = this._matrizActual.length*tamCasilla;
+    this._width = this._matrizActual[0].length*tamCasilla;
     this._jsonElementos = this.inicializarTablero([vuX,vuY]);
     //this.mostrarTablero();
-    this.animarTablero();
+    this._animacionTablero = this.animarTablero();
+
   }
 
   inicializarTablero([vuX,vuY]) {
+    debugger
+    this._matrizActual = this._arrMatrices[this._nivel];
     let jsonCuadrados = {
       elemento: [],
       x: [],
       y: [],
+      spawn: null,
+      vectorSpawn: null,
     };
 
     let jsonBola = {
@@ -48,7 +60,7 @@ class Tablero {
             jsonCuadrados.y.push(y);
           } else if (elemento >= 7 && elemento <= 9) {
             // LA PALA SIEMPRE INICIARÁ SIENDO TIPO 7
-            if (x - 1 < this._width && this._matrizActual[y][x + 1] !== 7) {
+            if (x - 1 < this._width/tamCasilla && this._matrizActual[y][x + 1] !== 7) {
               let pala = new Pala(
                 x - anchoInicialPala + 1,
                 y,
@@ -64,23 +76,24 @@ class Tablero {
               anchoInicialPala++;
             }
           } else if (elemento === 10) {
-            debugger
             let bola = new Bola(x, y, true, "red", vuX, vuY);
             jsonBola.elemento = bola;
             jsonBola.x = x;
             jsonBola.y = y;
+            jsonBola.spawn = [x,y];
+            jsonBola.vectorSpawn = [vuX, vuY];
           }
         })
       );
-
       if (
         jsonCuadrados.elemento.length === 0 ||
         jsonBola.elemento === null ||
         jsonarrPala.elemento === null
-      )
+      ){
         throw new Error(
-          "No se crearon instancias necesarias de Bola o arrPala o cuadrado"
+          "No se crearon instancias necesarias de Bola, arrPala o cuadrado"
         );
+    }
       return {
         Cuadrados: jsonCuadrados,
         bola: jsonBola,
@@ -310,7 +323,6 @@ class Tablero {
         case "y":
           this._jsonElementos.bola.elemento.vectorXY[1] *= -1;
           if (colision.objetoColisionado.elemento instanceof Pala) {
-            debugger;
             let vectorAntiguo = this._jsonElementos.bola.elemento.vectorXY;
             switch (colision.objetoColisionado.elemento._direccion) {
               case "derecha":
@@ -384,12 +396,46 @@ class Tablero {
 
   finPartida(colision) {
     if (this.perder(colision)) {
+      this._vidas-=1;
+      if (this._vidas==0) {
+        this.mostrarTexto("Has perdido");
+        clearInterval(this._animacionTablero);
+        this._animacionTablero = null;
+        return true;
+      }
       console.log("perdido");
+      this._jsonElementos = this.inicializarTablero([-1,1]);
       return true;
     } else if (this._jsonElementos.Cuadrados.elemento.length == 0) {
+      debugger
       console.log("ganado");
+      this._vidas = 3
+      this._nivel++;
+      this._jsonElementos = this.inicializarTablero([-1,1]);
       return true;
     }
+  }
+
+  comprobarGanadoJuego(){
+    if (this._nivel < MAXniveles ) {
+      this._jsonElementos = this.inicializarTablero([-1,1]);
+      this._vidas = 3
+      this._animacionTablero = this.animarTablero();
+    } else if (this._nivel === 2) {
+      this.mostrarTexto("Has ganado");
+    }
+  }
+
+  comprobarPerdidoJuego(){
+    if (this._vidas === 0) {
+      this.mostrarTexto("Has perdido");
+    }
+  }
+
+  mostrarTexto(txt){
+      ctx.font = "italic 30px Arial";
+      ctx.fillStyle = "red";
+      ctx.fillText(txt, 200, 150);
   }
 
   actualizarTablero() {
@@ -398,12 +444,10 @@ class Tablero {
 
       //depende de this.comprobarColisionBola()
       if (colision) {
-        debugger
         if (this.finPartida(colision)) {
-          debugger
           console.log("fin");
-          clearInterval(this._jugando);
-          this._jugando = null;
+          //this.comprobarPerdidoJuego();
+          //this.comprobarGanadoJuego();
         } else {
           this.alterarVectorBola(colision);
           if (colision.objetoColisionado instanceof Cuadrado) {
@@ -411,9 +455,6 @@ class Tablero {
               this.eliminarCuadrado(colision.index);
           }
         }
-
-
-
       }
 
       let bolaAux = this._jsonElementos.bola.elemento;
@@ -425,8 +466,6 @@ class Tablero {
       };
       //this._jsonElementos.pala.elemento.dibujar();
     }
-  
-  
 
   eliminarCuadrado(index) {
     this._matrizActual[this._jsonElementos.Cuadrados.y[index]][
@@ -438,7 +477,7 @@ class Tablero {
   }
 
   animarTablero() {
-    this._jugando = setInterval(() => {
+    return this._jugando = setInterval(() => {
       this.actualizarTablero();
       this.borrarTablero();
       this.mostrarTablero();
